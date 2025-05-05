@@ -65,7 +65,7 @@ class TimeEntriesListResult(object):
         
     def ndjson(self) -> str:
         """Returns a newline-delimited JSON string."""
-        return "\n".join([e.json() for e in self.entries])
+        return "\n".join([e.model_dump_json() for e in self.entries])
 
 
 class GroupByCriterion(object):
