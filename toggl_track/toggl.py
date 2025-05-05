@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, Iterator, List
 
 import requests
-from pydantic import BaseModel, TypeAdapter
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 
 class TimeEntry(BaseModel):
