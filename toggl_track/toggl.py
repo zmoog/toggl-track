@@ -68,7 +68,7 @@ class TimeEntries(object):
         try:
             entries = TypeAdapter(List[TimeEntry]).validate_json(resp.text)
         except (ValidationError, ValueError) as e:
-            raise Exception(f"Failed to parse time entries JSON: {e}")
+            raise JSONParsingError(f"Failed to parse time entries JSON: {e}")
 
         if description:
             entries = filter(lambda entry: description in entry.initiative, entries)
