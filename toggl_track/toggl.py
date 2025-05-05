@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, Iterator, List
 
 import requests
-from pydantic import BaseModel, parse_raw_as
+from pydantic import BaseModel, TypeAdapter
 
 
 class TimeEntry(BaseModel):
@@ -13,14 +13,14 @@ class TimeEntry(BaseModel):
     workspace_id: int
     user_id: int
     project_id: int
-    task_id: Optional[int]
+    task_id: Optional[int] = None
     billable: bool
     at: datetime
     description: str
     start: datetime
-    stop: Optional[datetime]
+    stop: Optional[datetime] = None
     duration: int
-    tags: Optional[List[str]]
+    tags: Optional[List[str]] = None
 
     @property
     def initiative(self) -> str:
@@ -65,7 +65,7 @@ class TimeEntries(object):
 
         # it looks like the API doesn't support filtering, so I suppose
         # we have to do it ourselves
-        entries = parse_raw_as(List[TimeEntry], resp.text)
+        entries = TypeAdapter(List[TimeEntry]).validate_json(resp.text)
 
         if description:
             entries = filter(lambda entry: description in entry.initiative, entries)
