@@ -65,7 +65,10 @@ class TimeEntries(object):
 
         # it looks like the API doesn't support filtering, so I suppose
         # we have to do it ourselves
-        entries = TypeAdapter(List[TimeEntry]).validate_json(resp.text)
+        try:
+            entries = TypeAdapter(List[TimeEntry]).validate_json(resp.text)
+        except (ValidationError, ValueError) as e:
+            raise Exception(f"Failed to parse time entries JSON: {e}")
 
         if description:
             entries = filter(lambda entry: description in entry.initiative, entries)
