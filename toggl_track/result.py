@@ -3,7 +3,7 @@ import json
 from itertools import groupby
 from typing import Any, Iterator, List
 
-from pydantic.json import pydantic_encoder
+from pydantic_core import to_jsonable_python
 from rich import box
 from rich.console import Console
 from rich.table import Table
@@ -61,7 +61,7 @@ class TimeEntriesListResult(object):
         else:
             result = self.entries
         
-        return json.dumps(result, default=pydantic_encoder)
+        return json.dumps(to_jsonable_python(result))
         
     def ndjson(self) -> str:
         """Returns a newline-delimited JSON string."""
@@ -137,7 +137,8 @@ class TimeEntriesGroupByResult(object):
             result = {root: self.entries}
         else:
             result = self.entries
-        return json.dumps(result)
+
+        return json.dumps(to_jsonable_python(result))
 
     def ndjson(self) -> str:
         """Returns a newline-delimited JSON string."""
