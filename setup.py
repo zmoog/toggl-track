@@ -34,7 +34,7 @@ setup(
     install_requires=[
         "click ==8.1.8",
         "pydantic < 3",
-        "requests ==2.32.3",
+        "requests ==2.32.4",
         "rich ==14.0.0",
         ],
     extras_require={
