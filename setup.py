@@ -32,7 +32,7 @@ setup(
         tgl=toggl_track.cli:cli
     """,
     install_requires=[
-        "click ==8.1.8",
+        "click >=8.3.0, <9.0.0",
         "pydantic < 3",
         "requests ==2.32.5",
         "rich ==14.2.0",
@@ -43,5 +43,5 @@ setup(
             "pytest-recording ==0.13.4",
             ]
     },
-    python_requires=">=3.7",
+    python_requires=">=3.10",
 )
