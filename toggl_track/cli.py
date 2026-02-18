@@ -3,7 +3,7 @@ from typing import List
 
 import click
 
-from .toggl import TimeEntries
+from .toggl import TimeEntries, MissingAPITokenError
 from .result import TimeEntriesListResult, TimeEntriesGroupByResult, GroupByCriterion, render
 
 
@@ -55,6 +55,14 @@ def entries(ctx: click.Context, description: List[str], project_id: List[int]):
     ctx.ensure_object(dict)
     ctx.obj['description'] = description
     ctx.obj['project_id'] = project_id
+    try:
+        ctx.obj['client'] = TimeEntries.from_environment()
+    except MissingAPITokenError:
+        raise click.ClickException(
+            "TOGGL_API_TOKEN environment variable is not set.\n"
+            "  Set it with:  export TOGGL_API_TOKEN=<your-api-token>\n"
+            "  Get your token at: https://track.toggl.com/profile"
+        )
 
 
 @entries.command(name="list")
@@ -73,7 +81,7 @@ def entries(ctx: click.Context, description: List[str], project_id: List[int]):
 def list_entries(ctx: click.Context, start_date: dt.datetime, end_date: dt.datetime):
     """Returns a list of the latest time entries (default: last 24 hours)"""
 
-    client = TimeEntries.from_environment()
+    client = ctx.obj['client']
 
     click.echo(
         render(
@@ -106,7 +114,7 @@ def list_entries(ctx: click.Context, start_date: dt.datetime, end_date: dt.datet
 def group_by_entries(ctx: click.Context, start_date: dt.datetime, end_date: dt.datetime, field: str = "tags"):
     """Returns a list of time entries grouped by a field"""
 
-    client = TimeEntries.from_environment()
+    client = ctx.obj['client']
 
     click.echo(
         render(
