@@ -27,6 +27,11 @@ class TimeEntry(BaseModel):
         """Returns the initiative part of the description."""
         return self.description.split(":")[0]
 
+class MissingAPITokenError(Exception):
+    """Raised when the TOGGL_API_TOKEN environment variable is not set."""
+    pass
+
+
 class TimeEntries(object):
     """TimeEntries API client."""
 
@@ -37,9 +42,8 @@ class TimeEntries(object):
     def from_environment(cls) -> "TimeEntries":
         """Creates a new `TimeEntries` instance from the `TOGGL_API_TOKEN` environment variable."""
         if "TOGGL_API_TOKEN" not in os.environ:
-            raise Exception(
-                "TOGGL_API_TOKEN environment variable not found. "
-                "Please set it to your Toggl Track API token."
+            raise MissingAPITokenError(
+                "TOGGL_API_TOKEN environment variable is not set."
             )
         return cls(api_token=os.environ["TOGGL_API_TOKEN"])
 
